@@ -1,0 +1,217 @@
+{
+  "brokenInternal": [
+    {
+      "url": "/app-icons/{app_id}/256.webp",
+      "status": "BROKEN",
+      "error": "File not found in public directory",
+      "files": [
+        "src\\components\\apps\\AppStore\\AppStore.svelte",
+        "src\\components\\Dock\\DockItem.svelte"
+      ]
+    },
+    {
+      "url": "/resume/Chirag_Resume.pdf",
+      "status": "BROKEN",
+      "error": "File not found in public directory",
+      "files": [
+        "src\\components\\apps\\Contact\\Contact.svelte",
+        "src\\components\\apps\\Resume\\Resume.svelte"
+      ]
+    }
+  ],
+  "brokenExternal": [
+    {
+      "url": "https://linkedin.com/in/chirag",
+      "status": "BROKEN",
+      "code": 999,
+      "files": [
+        "src\\components\\apps\\Contact\\Contact.svelte"
+      ]
+    },
+    {
+      "url": "https://github.com/chiragbaida",
+      "status": "BROKEN",
+      "code": 404,
+      "files": [
+        "src\\components\\apps\\Contact\\Contact.svelte"
+      ]
+    },
+    {
+      "url": "https://gitaarth.com",
+      "status": "ERROR",
+      "error": "getaddrinfo ENOTFOUND gitaarth.com",
+      "files": [
+        "src\\components\\apps\\Projects\\projects-data.ts"
+      ]
+    },
+    {
+      "url": "https://techbrahmand.com",
+      "status": "ERROR",
+      "error": "getaddrinfo ENOTFOUND techbrahmand.com",
+      "files": [
+        "src\\components\\apps\\Projects\\projects-data.ts"
+      ]
+    },
+    {
+      "url": "https://github.com/chiragbaldia",
+      "status": "BROKEN",
+      "code": 404,
+      "files": [
+        "src\\components\\apps\\PurusProfile\\PurusProfile.svelte",
+        "src\\components\\apps\\Resume\\Resume.svelte"
+      ]
+    },
+    {
+      "url": "https://github.com/chiragbaldia/devfolio-os",
+      "status": "BROKEN",
+      "code": 404,
+      "files": [
+        "src\\configs\\apps\\apps-config.ts"
+      ]
+    }
+  ],
+  "allInternal": [
+    {
+      "url": "/app-icons/{app_id}/256.webp",
+      "status": "BROKEN",
+      "error": "File not found in public directory",
+      "files": [
+        "src\\components\\apps\\AppStore\\AppStore.svelte",
+        "src\\components\\Dock\\DockItem.svelte"
+      ]
+    },
+    {
+      "url": "/emojis/wink.png",
+      "status": "OK",
+      "files": [
+        "src\\components\\apps\\AppStore\\AppStore.svelte",
+        "src\\components\\apps\\PurusProfile\\PurusProfile.svelte",
+        "src\\components\\TopBar\\TopBar.svelte"
+      ]
+    },
+    {
+      "url": "/resume/Chirag_Resume.pdf",
+      "status": "BROKEN",
+      "error": "File not found in public directory",
+      "files": [
+        "src\\components\\apps\\Contact\\Contact.svelte",
+        "src\\components\\apps\\Resume\\Resume.svelte"
+      ]
+    },
+    {
+      "url": "/profile/chirag.png",
+      "status": "OK",
+      "files": [
+        "src\\components\\apps\\PurusProfile\\PurusProfile.svelte",
+        "src\\components\\apps\\Resume\\Resume.svelte"
+      ]
+    },
+    {
+      "url": "/emojis/star-struck.png",
+      "status": "OK",
+      "files": [
+        "src\\components\\apps\\PurusProfile\\PurusProfile.svelte"
+      ]
+    },
+    {
+      "url": "/sounds/mac-startup-sound.mp3",
+      "status": "OK",
+      "files": [
+        "src\\components\\Desktop\\BootupScreen.svelte"
+      ]
+    },
+    {
+      "url": "/app-icons/system-preferences/256.webp",
+      "status": "OK",
+      "files": [
+        "src\\components\\Desktop\\SystemUpdate.svelte"
+      ]
+    },
+    {
+      "url": "/app-icons/wallpapers/256.webp",
+      "status": "OK",
+      "files": [
+        "src\\components\\TopBar\\ActionCenterToggle.svelte"
+      ]
+    }
+  ],
+  "allExternal": [
+    {
+      "url": "https://linkedin.com/in/chirag",
+      "status": "BROKEN",
+      "code": 999,
+      "files": [
+        "src\\components\\apps\\Contact\\Contact.svelte"
+      ]
+    },
+    {
+      "url": "https://github.com/chiragbaida",
+      "status": "BROKEN",
+      "code": 404,
+      "files": [
+        "src\\components\\apps\\Contact\\Contact.svelte"
+      ]
+    },
+    {
+      "url": "https://dealdirect.in",
+      "status": "OK",
+      "code": 200,
+      "files": [
+        "src\\components\\apps\\Projects\\projects-data.ts"
+      ]
+    },
+    {
+      "url": "https://gitaarth.com",
+      "status": "ERROR",
+      "error": "getaddrinfo ENOTFOUND gitaarth.com",
+      "files": [
+        "src\\components\\apps\\Projects\\projects-data.ts"
+      ]
+    },
+    {
+      "url": "https://techbrahmand.com",
+      "status": "ERROR",
+      "error": "getaddrinfo ENOTFOUND techbrahmand.com",
+      "files": [
+        "src\\components\\apps\\Projects\\projects-data.ts"
+      ]
+    },
+    {
+      "url": "https://github.com/chiragbaldia",
+      "status": "BROKEN",
+      "code": 404,
+      "files": [
+        "src\\components\\apps\\PurusProfile\\PurusProfile.svelte",
+        "src\\components\\apps\\Resume\\Resume.svelte"
+      ]
+    },
+    {
+      "url": "https://stackblitz.com/github/puruvj/macos-web?embed=1&file=src/components/Desktop/Desktop.svelte&hideNavigation=1&theme=dark&view=editor",
+      "status": "OK",
+      "code": 200,
+      "files": [
+        "src\\components\\apps\\VSCode\\VSCode.svelte"
+      ]
+    },
+    {
+      "url": "http://www.w3.org/2000/svg",
+      "status": "OK",
+      "code": 301,
+      "files": [
+        "src\\components\\SVG\\SwitchSVG.svelte",
+        "src\\components\\SVG\\traffic-lights\\CloseSVG.svelte",
+        "src\\components\\SVG\\traffic-lights\\ExpandSVG.svelte",
+        "src\\components\\SVG\\traffic-lights\\MinimizeSVG.svelte",
+        "src\\components\\SVG\\traffic-lights\\StretchSVG.svelte"
+      ]
+    },
+    {
+      "url": "https://github.com/chiragbaldia/devfolio-os",
+      "status": "BROKEN",
+      "code": 404,
+      "files": [
+        "src\\configs\\apps\\apps-config.ts"
+      ]
+    }
+  ]
+}
