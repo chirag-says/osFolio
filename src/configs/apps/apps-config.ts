@@ -96,7 +96,7 @@ const viewSource = create_app_config({
 	resizable: true,
 
 	should_open_window: false,
-	external_action: () => window.open('https://github.com/chirag-says/devfolio-os', '_blank'),
+	external_action: () => window.open('https://github.com/chirag-says/osFolio', '_blank'),
 });
 
 const camera = create_app_config({

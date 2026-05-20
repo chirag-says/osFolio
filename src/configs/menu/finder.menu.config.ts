@@ -2,10 +2,10 @@ import { create_menu_config } from '🍎/helpers/create-menu-config';
 
 export const finder_menu_config = create_menu_config({
 	default: {
-		title: 'DevFolio',
+		title: 'Chirag OS',
 		menu: {
 			'about-finder': {
-				title: 'About DevFolio OS',
+				title: 'About Chirag OS',
 				breakAfter: true,
 			},
 			preferences: {
@@ -17,7 +17,7 @@ export const finder_menu_config = create_menu_config({
 				breakAfter: true,
 			},
 			'hide-finder': {
-				title: 'Hide DevFolio',
+				title: 'Hide Chirag OS',
 			},
 			'hide-others': {
 				title: 'Hide Others',
@@ -379,7 +379,7 @@ export const finder_menu_config = create_menu_config({
 				breakAfter: true,
 			},
 			'macos-help': {
-				title: 'DevFolio Help',
+				title: 'Chirag OS Help',
 			},
 		},
 	},

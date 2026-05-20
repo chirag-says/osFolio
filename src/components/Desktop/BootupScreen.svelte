@@ -8,8 +8,11 @@
 
 	let hidden_splash_screen = $state(false);
 	let progress_val = tweened(100, { duration: 3000, easing: quintInOut });
+	let show_label = $state(false);
 
 	onMount(async () => {
+		await sleep(400);
+		show_label = true;
 		$progress_val = 0;
 		await sleep(3000);
 		hidden_splash_screen = true;
@@ -19,9 +22,11 @@
 {#if !(hidden_splash_screen || import.meta.env.DEV)}
 	<div out:fade_out={{ duration: 500 }} class="splash-screen" use:elevation={'bootup-screen'}>
 		<div class="logo-mark">
-			<span class="logo-bracket">&gt;</span><span class="logo-cursor">_</span>
+			<span class="logo-letter">C</span><span class="logo-letter accent">S</span>
 		</div>
-		<p class="boot-label">DevFolio OS</p>
+		{#if show_label}
+			<p class="boot-label">Chirag OS</p>
+		{/if}
 
 		<div
 			class="progress"
@@ -29,7 +34,7 @@
 			aria-valuenow={100 - $progress_val}
 			aria-valuemin={0}
 			aria-valuemax={100}
-			aria-valuetext="Initializing DevFolio OS..."
+			aria-valuetext="Initializing Chirag OS..."
 		>
 			<div class="indicator" style:translate="-{$progress_val}% 0"></div>
 		</div>
@@ -64,28 +69,46 @@
 	}
 
 	.logo-mark {
-		font-size: 4rem;
-		font-weight: 300;
-		font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+		font-size: 4.5rem;
+		font-weight: 200;
+		font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
 		color: white;
-		letter-spacing: -2px;
+		letter-spacing: 4px;
+		display: flex;
+		gap: 2px;
+		animation: fadeInUp 0.8s ease-out both;
 	}
 
-	.logo-cursor {
-		animation: blink 1s step-end infinite;
+	.logo-letter {
+		display: inline-block;
 	}
 
-	@keyframes blink {
-		50% { opacity: 0; }
+	.logo-letter.accent {
+		background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(12px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	.boot-label {
-		color: rgba(255, 255, 255, 0.5);
-		font-size: 0.85rem;
+		color: rgba(255, 255, 255, 0.4);
+		font-size: 0.8rem;
 		font-weight: 400;
-		letter-spacing: 2px;
+		letter-spacing: 3px;
 		text-transform: uppercase;
 		margin-top: -0.5rem;
+		animation: fadeInUp 0.6s ease-out both;
 	}
 
 	.progress {

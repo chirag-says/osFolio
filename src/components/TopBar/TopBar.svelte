@@ -117,7 +117,7 @@
 		top: 0;
 
 		z-index: 0;
-		backdrop-filter: blur(12px);
+		backdrop-filter: blur(25px);
 	}
 
 	.emoji {

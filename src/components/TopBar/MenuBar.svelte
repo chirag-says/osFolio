@@ -3,6 +3,28 @@
 	import { click_outside, elevation, focus_outside } from '🍎/actions';
 	import { menubar_state } from '🍎/state/menubar.svelte';
 	import Menu from './Menu.svelte';
+
+	let appleClickCount = $state(0);
+	let showConfetti = $state(false);
+	let clickTimer: ReturnType<typeof setTimeout>;
+
+	function handleAppleClick() {
+		menubar_state.active = 'apple';
+		appleClickCount++;
+		
+		clearTimeout(clickTimer);
+		clickTimer = setTimeout(() => { appleClickCount = 0; }, 2000);
+
+		if (appleClickCount >= 5) {
+			appleClickCount = 0;
+			triggerConfetti();
+		}
+	}
+
+	function triggerConfetti() {
+		showConfetti = true;
+		setTimeout(() => { showConfetti = false; }, 3000);
+	}
 </script>
 
 <div
@@ -18,7 +40,7 @@
 					class:default-menu={menuID === 'default'}
 					class:apple-icon-button={menuID === 'apple'}
 					style:--scale={menubar_state.active === menuID ? 1 : 0}
-					onclick={() => (menubar_state.active = menuID)}
+					onclick={() => menuID === 'apple' ? handleAppleClick() : (menubar_state.active = menuID)}
 					onmouseover={() => menubar_state.active && (menubar_state.active = menuID)}
 					onfocus={() => (menubar_state.active = menuID)}
 				>
@@ -40,6 +62,22 @@
 		</div>
 	{/each}
 </div>
+
+{#if showConfetti}
+	<div class="confetti-container">
+		{#each Array(50) as _, i}
+			<div
+				class="confetti-piece"
+				style:--x="{Math.random() * 100}vw"
+				style:--delay="{Math.random() * 0.5}s"
+				style:--speed="{1.5 + Math.random() * 2}s"
+				style:--color="hsl({Math.random() * 360}, 80%, 60%)"
+				style:--size="{6 + Math.random() * 6}px"
+				style:--drift="{(Math.random() - 0.5) * 200}px"
+			></div>
+		{/each}
+	</div>
+{/if}
 
 <style>
 	.container {
@@ -101,6 +139,41 @@
 
 		:global(svg) {
 			font-size: 1rem;
+		}
+	}
+
+	/* Confetti */
+	.confetti-container {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		pointer-events: none;
+		z-index: 99999;
+		overflow: hidden;
+	}
+
+	.confetti-piece {
+		position: absolute;
+		top: -10px;
+		left: var(--x);
+		width: var(--size);
+		height: var(--size);
+		background: var(--color);
+		border-radius: 2px;
+		animation: confetti-fall var(--speed) ease-in var(--delay) forwards;
+		opacity: 0;
+	}
+
+	@keyframes confetti-fall {
+		0% {
+			opacity: 1;
+			transform: translateY(0) translateX(0) rotate(0deg);
+		}
+		100% {
+			opacity: 0;
+			transform: translateY(100vh) translateX(var(--drift)) rotate(720deg);
 		}
 	}
 </style>

@@ -1,10 +1,22 @@
 <script lang="ts">
+	import { onMount, tick } from 'svelte';
+
 	let input = $state('');
-	let history = $state<{ type: 'input' | 'output'; text: string }[]>([
-		{ type: 'output', text: 'DevFolio OS v1.0 — Interactive Portfolio Terminal' },
+	let history = $state<{ type: 'input' | 'output' | 'html'; text: string }[]>([
+		{ type: 'output', text: 'Chirag OS v1.0 — Interactive Portfolio Terminal' },
 		{ type: 'output', text: 'Type "help" for available commands.\n' },
 	]);
 	let inputEl: HTMLInputElement;
+	let terminalBody: HTMLDivElement;
+	let commandHistory = $state<string[]>([]);
+	let historyIndex = $state(-1);
+	let isDestroyed = $state(false);
+
+	function scrollToBottom() {
+		tick().then(() => {
+			if (terminalBody) terminalBody.scrollTop = terminalBody.scrollHeight;
+		});
+	}
 
 	const commands: Record<string, () => string> = {
 		help: () =>
@@ -19,8 +31,12 @@
   neofetch      — System information
   clear         — Clear terminal
   sudo hire chirag — Try it ;)
+  sudo rm -rf / — Don't do it!
   ls            — List desktop apps
-  cat about.txt — Read about me`,
+  cat about.txt — Read about me
+  date          — Current date & time
+  echo [text]   — Echo back text
+  history       — Command history`,
 
 		whoami: () => 'Chirag — Full Stack Software Engineer | Bengaluru, India',
 
@@ -84,7 +100,7 @@ Real-time    → Socket.IO, WebSockets, Supabase Realtime`,
 			`📧 Email     → chiragbaldia@gmail.com
 📱 Phone     → +91 636-012-2696
 🔗 LinkedIn  → linkedin.com/in/chirag
-🐙 GitHub    → github.com/chiragbaldia`,
+🐙 GitHub    → github.com/chirag-says`,
 
 		resume: () => {
 			window.open('/resume/Chirag_Resume.pdf', '_blank');
@@ -92,22 +108,23 @@ Real-time    → Socket.IO, WebSockets, Supabase Realtime`,
 		},
 
 		neofetch: () =>
-			`        >_                chirag@devfolio-os
-       /  \\               ──────────────────
-      /    \\              OS: DevFolio OS v1.0
-     /______\\             Kernel: Svelte 5.34
-    |   >_   |            Shell: chirag-sh
-    |________|            DE: macOS Web
-                          Theme: Dark
-                          Terminal: DevFolio Terminal
-                          Projects: 15
-                          Languages: 8
-                          Uptime: since Nov 2025`,
+			`        ██████╗███████╗       chirag@chirag-os
+       ██╔════╝██╔════╝       ──────────────────
+       ██║     ███████╗       OS: Chirag OS v1.0
+       ██║     ╚════██║       Kernel: Svelte 5.34
+       ╚██████╗███████║       Shell: chirag-sh
+        ╚═════╝╚══════╝       DE: macOS Web
+                              Theme: Dark
+                              Terminal: Portfolio Terminal
+                              Projects: 15
+                              Languages: 8
+                              Uptime: since Nov 2025`,
 
 		ls: () =>
 			`Projects.app    Resume.app    Terminal.app
 Skills.app      Contact.app   Calculator.app
-Calendar.app    Wallpapers.app  AboutMe.app`,
+Calendar.app    Wallpapers.app  AboutMe.app
+Camera.app      Gallery.app   VSCode.app`,
 
 		'cat about.txt': () =>
 			`Hi! I'm Chirag, a Full Stack Software Engineer from Bengaluru.
@@ -123,59 +140,136 @@ I love turning complex problems into elegant, production-grade code.`,
 
 > "The best way to predict the future is to build it." — Chirag, probably.`,
 
+		'sudo rm -rf /': () => '__DESTROY__',
+
+		date: () => new Date().toLocaleString('en-IN', {
+			weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+			hour: '2-digit', minute: '2-digit', second: '2-digit',
+		}),
+
+		history: () => commandHistory.length
+			? commandHistory.map((cmd, i) => `  ${i + 1}  ${cmd}`).join('\n')
+			: 'No commands in history.',
+
 		clear: () => '__CLEAR__',
 	};
 
+	async function destroySequence() {
+		isDestroyed = true;
+		const lines = [
+			'[sudo] password for root: ••••••••',
+			'rm: removing /System...',
+			'rm: removing /Applications...',
+			'rm: removing /Users/chirag/Projects...',
+			'rm: removing /Library...',
+			'rm: removing /usr...',
+			'',
+			'💀 KERNEL PANIC — Fatal error: filesystem destroyed',
+			'',
+			'Just kidding 😄 Refreshing in 3 seconds...',
+		];
+
+		for (const line of lines) {
+			history = [...history, { type: 'output', text: line }];
+			scrollToBottom();
+			await new Promise(r => setTimeout(r, 300));
+		}
+
+		await new Promise(r => setTimeout(r, 3000));
+		isDestroyed = false;
+		history = [
+			{ type: 'output', text: 'Chirag OS v1.0 — Interactive Portfolio Terminal' },
+			{ type: 'output', text: 'System restored. Type "help" for available commands.\n' },
+		];
+	}
+
 	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'ArrowUp') {
+			e.preventDefault();
+			if (commandHistory.length > 0) {
+				historyIndex = Math.min(historyIndex + 1, commandHistory.length - 1);
+				input = commandHistory[commandHistory.length - 1 - historyIndex];
+			}
+			return;
+		}
+		if (e.key === 'ArrowDown') {
+			e.preventDefault();
+			historyIndex = Math.max(historyIndex - 1, -1);
+			input = historyIndex >= 0 ? commandHistory[commandHistory.length - 1 - historyIndex] : '';
+			return;
+		}
+
 		if (e.key === 'Enter' && input.trim()) {
 			const cmd = input.trim().toLowerCase();
-			history = [...history, { type: 'input', text: `chirag@devfolio-os ~ % ${input}` }];
+			const rawInput = input.trim();
+			commandHistory = [...commandHistory, rawInput];
+			historyIndex = -1;
+			history = [...history, { type: 'input', text: `chirag@chirag-os ~ % ${rawInput}` }];
 
-			if (commands[cmd]) {
+			// Handle echo command
+			if (cmd.startsWith('echo ')) {
+				const text = rawInput.substring(5);
+				history = [...history, { type: 'output', text }];
+			} else if (commands[cmd]) {
 				const result = commands[cmd]();
 				if (result === '__CLEAR__') {
 					history = [];
+				} else if (result === '__DESTROY__') {
+					input = '';
+					destroySequence();
+					return;
 				} else {
 					history = [...history, { type: 'output', text: result }];
 				}
 			} else {
 				history = [
 					...history,
-					{ type: 'output', text: `zsh: command not found: ${input}\nType "help" for available commands.` },
+					{ type: 'output', text: `zsh: command not found: ${rawInput}\nType "help" for available commands.` },
 				];
 			}
 			input = '';
+			scrollToBottom();
 		}
 	}
 
 	function focusInput() {
 		inputEl?.focus();
 	}
+
+	onMount(() => {
+		inputEl?.focus();
+	});
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<section class="container" onclick={focusInput}>
+<section class="container" class:destroyed={isDestroyed} onclick={focusInput}>
 	<header class="titlebar app-window-drag-handle">
-		<span class="title-text">chirag@devfolio-os — zsh</span>
+		<span class="title-text">chirag@chirag-os — zsh</span>
 	</header>
 
-	<div class="terminal-body">
+	<div class="terminal-body" bind:this={terminalBody}>
 		{#each history as line}
-			<pre class={line.type}>{line.text}</pre>
+			{#if line.type === 'html'}
+				{@html line.text}
+			{:else}
+				<pre class={line.type}>{line.text}</pre>
+			{/if}
 		{/each}
 
-		<div class="input-line">
-			<span class="prompt">chirag@devfolio-os ~ %&nbsp;</span>
-			<input
-				bind:this={inputEl}
-				bind:value={input}
-				onkeydown={handleKeydown}
-				class="cmd-input"
-				spellcheck="false"
-				autocomplete="off"
-			/>
-		</div>
+		{#if !isDestroyed}
+			<div class="input-line">
+				<span class="prompt">chirag@chirag-os ~ %&nbsp;</span>
+				<input
+					bind:this={inputEl}
+					bind:value={input}
+					onkeydown={handleKeydown}
+					class="cmd-input"
+					spellcheck="false"
+					autocomplete="off"
+				/>
+			</div>
+		{/if}
 	</div>
 </section>
 
@@ -187,6 +281,20 @@ I love turning complex problems into elegant, production-grade code.`,
 		grid-template-rows: auto 1fr;
 		height: 100%;
 		font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Menlo', monospace;
+		transition: filter 0.5s ease;
+	}
+
+	.container.destroyed {
+		animation: glitch 0.3s ease-in-out infinite;
+	}
+
+	@keyframes glitch {
+		0% { filter: none; }
+		20% { filter: hue-rotate(90deg) saturate(3); }
+		40% { filter: none; transform: translate(2px, -1px); }
+		60% { filter: hue-rotate(-90deg) brightness(1.5); }
+		80% { filter: invert(0.1); transform: translate(-1px, 1px); }
+		100% { filter: none; }
 	}
 
 	.titlebar {
@@ -198,21 +306,6 @@ I love turning complex problems into elegant, production-grade code.`,
 		border-top-left-radius: inherit;
 		border-top-right-radius: inherit;
 	}
-
-	.traffic-dots {
-		display: flex;
-		gap: 0.4rem;
-	}
-
-	.dot {
-		width: 12px;
-		height: 12px;
-		border-radius: 50%;
-	}
-
-	.dot.red { background: #ff5f57; }
-	.dot.yellow { background: #ffbd2e; }
-	.dot.green { background: #28c840; }
 
 	.title-text {
 		color: rgba(255, 255, 255, 0.5);
